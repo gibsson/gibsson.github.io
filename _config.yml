@@ -21,7 +21,7 @@
 title: Embedded experiments
 #email: bisson.gary@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  15+ Years of wrestling penguins and green robots
+  15+ Years of wrestling penguins and robots
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: g_bisson

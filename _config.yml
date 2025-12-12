@@ -29,10 +29,13 @@ github_username: gibsson
 linkedin_username: bissong
 
 # Build settings
-theme: minima
+remote_theme: jekyll/minima@bf9ef989246b63536e9db61082f663f1a6d4d9ce
 plugins:
   - jekyll-feed
+  - jekyll-remote-theme
 
+minima:
+  skin: dark
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to

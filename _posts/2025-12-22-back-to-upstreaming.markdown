@@ -4,29 +4,26 @@ title:  "Back to upstreaming!"
 date:   2025-12-22 22:02:14 +0100
 categories: mainline
 ---
-For the last few years, I haven't had the chance to do much upstreaming as part of my job.
 
-It took some time to get back on the horse but I wanted to share my thoughts on the process and how it involved since I last did it.
+For the last few years, I haven't had the chance to do much upstreaming as part of my day job. It took some time to "get back on the horse," and I wanted to share my thoughts on how the process has evolved since I last contributed.
 
-# What to upstream?
+# What to Upstream?
 
-The first step was to decide what to upstream. As my current work is around Qualcomm Android BSP, there isn't much to upstream there unfortunately.
+The first step was deciding which hardware to target. My current work revolves around the Qualcomm Android BSP, which unfortunately doesn't offer much room for upstreaming.
 
-So I went back to the hardware I had in stock and picked the [Tungsten510](https://www.ezurio.com/product/tungsten510-smarc) and [Tungsten700](https://www.ezurio.com/product/tungsten700-smarc) SMARC modules which are based on the [MediaTek Genio processors](https://www.ezurio.com/product/tungsten510-smarc).
+I decided to revisit my hardware stock and picked the [**Tungsten510**](https://www.ezurio.com/product/tungsten510-smarc) and [**Tungsten700**](https://www.ezurio.com/product/tungsten700-smarc) SMARC modules which are based on the **MediaTek Genio** processors.
 
 <p align="center">
-<img src="{{ site.baseurl }}/img/tungsten510.png" width="400">
+<img src="{{ site.baseurl }}/img/tungsten510.png" width="400" alt="Tungsten510 SMARC Module">
 </p>
 
 The idea was to get a powerful platform that would allow testing many aspects of the kernel. That is what the Genio SoCs offer as they are high-end SoC (up to 8 cores, Mali GPU, USB3.0, GbE, PCIe, MIPI-DSI, HDMI etc...) and are well supported upstream thanks to the [work from Collabora](https://www.collabora.com/news-and-blog/news-and-events/collabora-mediatek-pushing-boundaries-on-the-latest-iot-boards-and-chromebooks.html).
 
-# Upstreaming process
+# The Upstreaming process
 
-Once the device was selected, the next step was to get the board up and running with mainline Linux.
+Once the hardware was selected, the goal was to get the boards running on mainline Linux. This was relatively straightforward because I had previously performed a platform port for the [Android (RITA) release from Baylibre](https://lairdcp.github.io/guides/android-14-rita-tungsten/Android-rita14-release-for-Tungsten-Platforms.html), which was based on Android kernel 6.12 and Collabora upstream patches.
 
-In this case it was fairly easy as I did a port of the platform for the [Android (RITA) release from Baylibre](https://lairdcp.github.io/guides/android-14-rita-tungsten/Android-rita14-release-for-Tungsten-Platforms.html) which was based on Android kernel 6.12 + Collbora upstream patches. This blog post won't be about the porting effort but the [mediatek-next](https://github.com/gibsson/linux-next/commits/mediatek-next/) branch on github shows my progress.
-
-## First submission
+## First Submission
 
 Now that the board is booting on `mediatek-next` branch, it was rebased on top of `master` which was `v6.18-rc1` at the time.
 
@@ -37,11 +34,11 @@ $ ./scripts/get_maintainer.pl patches_v1/000*
 $ vim patches_v1/000*
 ```
 
-*Spoiler*: don't use any of the above commands as they are deprecated/outdated :sweat_smile:
+**Spoiler**: Don't do this! These manual steps are largely outdated.
 
 First feedback I received after sending the series was: *"Just use b4!"*.
 
-## b4 tool
+## The b4 Tool
 
 What is `b4`? It's a tool created to make both developers and maintainers lives easier. And now that I've used it I confirm that it is true to its promise. Moreover the documentation is awesome:
 - [b4.docs.kernel.org](https://b4.docs.kernel.org/)
@@ -51,12 +48,12 @@ Note that the `b4` binary that comes with your OS might be outdated, so I recomm
 $ pip install b4
 ```
 
-But what does it do really? Anything needed for a good contribution:
-- Keeps track of your changes
-- Helps running `checkpatch` on pathces: `b4 prep --check`
-- Takes care of CC'ing the right persons: `b4 prep --auto-to-cc`
-- Ease the writing of your cover letter: `b4 prep --edit-cover`
-- Retrieves the review tags from mailing list: `b4 trailers -u`
+But what does it do really? It automates almost every tedious part of the contribution cycle:
+* **Change Tracking**: Keeps your series organized.
+* **Validation**: Runs checkpatch automatically via `b4 prep --check`.
+* **Auto-CC**: Identifies and CCs the correct maintainers via `b4 prep --auto-to-cc`.
+* **Cover Letters**: Simplifies writing and editing via `b4 prep --edit-cover`.
+* **Tag Management**: Automatically retrieves review tags from the mailing list via `b4 trailers -u`.
 
 Once all of the above options have been used to ensure the series looks good, you can simply send (or even do a dry-run):
 ```
@@ -67,9 +64,9 @@ At this stage, the whole patch management process was ok, now to the next tool.
 
 ## DTS schema validation
 
-That one I knew about after reading [Tips and Tricks for Validating Devicetree sources](https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/) from Linaro when the article came out. But that doesn't mean it was done properly at first :wink:
+Another major shift since 2018 is the rigor of Devicetree Schema validation. I was aware of the [Linaro guide on the subject](https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/).
 
-The article is well written and explains everything so I won't cover the basics. But I got tricked by forcing the use of my distro dt-schema package (2022.08) whereas the kernel checks for version > 2023.9. Long story short, bypassing that check hides so many errors.
+I initially forced the use of my distro's `dt-schema` package (v2022.08), but the kernel now requires versions > 2023.9. Bypassing this check hides critical errors. If you aren't seeing errors but the kernel bot is, upgrade your schema tool:
 
 Fortunately, the bot reporting the issues does give a clue:
 ```
@@ -96,29 +93,24 @@ Here is what it looks like on the latest version of my patch:
 
 But wait, there are still errors!?! True, but those are from `mt8188.dtsi` and also present in other platforms, to be fixed separately.
 
-# Result
+# Current Status & Results
 
-After learning to use the above tools and taking all the other feedback into account I'm happy with latest submission:
+After learning to use these tools and incorporating feedback, I've submitted v5 of the series:
 - [[PATCH v5 0/5] Add support for Ezurio MediaTek platforms](https://lore.kernel.org/all/20251203-review-v5-0-b26d5512c6af@gmail.com/)
 
-As of this writing, the series hasn't been merged but all the corrections requested have been made so I'm hopeful it will get in.
-
-Until then, I am using this platform to experiment with the latest kernels as most features are working:
-- MIPI-DSI display support
-- GPU Panfrost open-souce driver
-- SDIO: eMMC, SD & Wi-Fi/BT (MT7921S)
-- Gigabit Ethernet
-- USB 3.0 ports
-- PCIe gen3
+While not yet merged, the series is in good shape. Most major features are already working:
+* **MIPI-DSI** Display & **GPU** (Panfrost)
+* SDIO: **eMMC, SD & Wi-Fi/BT** (MT7921S)
+* **Gigabit Ethernet** & **USB 3.0**
 
 ![kmscube]({{ site.baseurl }}/img/tungsten510_kmscube.png)
 
-Next blog post will be showing more in-depth testing/benchmarking.
+Next blog post will be showing more in-depth testing and benchmarking.
 
-Also, updates will be provided from the missing features will be supported:
+Also, I will provide updates as missing features become supported:
 - HDMI
 - I2S Audio
 - Video codecs (h.264/h.265)
 - Camera support
 
-Let me know if you have any questions :wink:
+Let me know if you have any questions!

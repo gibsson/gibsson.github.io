@@ -100,8 +100,8 @@ After learning to use these tools and incorporating feedback, I've submitted v5 
 
 While not yet merged, the series is in good shape. Most major features are already working:
 * **MIPI-DSI** Display & **GPU** (Panfrost)
-* SDIO: **eMMC, SD & Wi-Fi/BT** (MT7921S)
-* **Gigabit Ethernet** & **USB 3.0**
+* SDIO: **eMMC**, **SD** & **Wi-Fi/BT** (MT7921S)
+* **Gigabit Ethernet**, **USB 3.0** & **PCIe**
 
 ![kmscube]({{ site.baseurl }}/img/tungsten510_kmscube.png)
 

@@ -66,7 +66,7 @@ At this stage, the whole patch management process was ok, now to the next tool.
 
 Another major shift since 2018 is the rigor of Devicetree Schema validation. I was aware of the [Linaro guide on the subject](https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/).
 
-I initially forced the use of my distro's `dt-schema` package (v2022.08), but the kernel now requires versions > 2023.9. Bypassing this check hides critical errors. If you aren't seeing errors but the kernel bot is, upgrade your schema tool:
+I initially forced the use of my distro's `dt-schema` package (v2022.08), but the kernel now requires versions > 2023.9. Bypassing this check hides critical errors.
 
 Fortunately, the bot reporting the issues does give a clue:
 ```
@@ -79,7 +79,7 @@ After the upgrade I was able to replicate the issues reported by the bot and fix
 
 Here is what it looks like on the latest version of my patch:
 ```
- make CHECK_DTBS=y mediatek/mt8370-tungsten-smarc.dtb
+$ make CHECK_DTBS=y mediatek/mt8370-tungsten-smarc.dtb
   DTC [C] arch/arm64/boot/dts/mediatek/mt8370-tungsten-smarc.dtb
 /linux/arch/arm64/boot/dts/mediatek/mt8370-tungsten-smarc.dtb: pmic (mediatek,mt6359): '#sound-dai-cells' does not match any of the regexes: '^pinctrl-[0-9]+$'
 	from schema $id: http://devicetree.org/schemas/mfd/mediatek,mt6397.yaml#
